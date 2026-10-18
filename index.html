@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Sargam Beats</title>
+<style>
+:root{--bg:#0a0d14;--panel:#151b27;--blue:#159cff;--text:#f5f7fb}
+*{box-sizing:border-box}html{touch-action:pan-y}body{margin:0;background:radial-gradient(ellipse at top,#17263b,#080a10 65%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+header{padding:15px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid #283449}
+h1{font-size:clamp(22px,4vw,32px);margin:0}.sub{color:#a8bad1;font-size:12px}
+button,select,input{font:inherit}button,select{color:#f5f7fb;background:#202b3b;border:1px solid #3b4c63;border-radius:12px;padding:10px 13px;cursor:pointer}button:active{transform:scale(.97)}button.active{background:#075da4;border-color:#24a5ff;box-shadow:0 0 15px #159cff55}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.settings{padding:14px 18px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:#0c111bd9}.settings label{display:flex;align-items:center;gap:8px;color:#c9d5e5;font-size:14px}
+main{padding:18px;max-width:1400px;margin:auto}.hint{color:#b3c2d7;font-size:14px;margin:5px 0 15px}.keys{display:flex;position:relative;height:min(52vh,420px);min-height:260px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none;filter:drop-shadow(0 12px 12px #0009)}
+.key{position:relative;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;flex:1;min-width:0;border:1px solid #9ba4b0;border-radius:0 0 10px 10px;background:linear-gradient(90deg,#d9dce2,#fff 18%,#f7f7f8 85%,#c8cbd0);color:#111;display:flex;align-items:flex-end;justify-content:center;padding-bottom:14px;font-weight:750;box-shadow:inset 0 -7px 0 #d0d2d6;cursor:pointer}
+.key .note{font-size:clamp(12px,2.1vw,19px)}.key .shortcut{position:absolute;bottom:43px;background:#bdeaff;color:#0a3653;border-radius:7px;padding:4px 7px;font-size:clamp(11px,1.8vw,15px)}
+.key.black{position:absolute;z-index:2;top:0;height:62%;width:3.25%;background:linear-gradient(90deg,#050609,#252a34 40%,#090a0d);border:1px solid #454b56;border-radius:0 0 7px 7px;color:white;box-shadow:inset 0 -5px 0 #000,0 5px 7px #0008;align-items:flex-end;padding-bottom:12px;transform:translateX(-50%)}
+.key.black .note{font-size:clamp(10px,1.6vw,15px)}.key.black .shortcut{bottom:42px;background:#5143a0;color:#fff;padding:3px 5px}
+.key.pressed{background:#83d8ff;box-shadow:inset 0 -8px 0 #159cff}.key.black.pressed{background:linear-gradient(90deg,#075da4,#168bd0,#063d70)}
+.key:focus-visible{outline:3px solid #4bc0ff;outline-offset:-3px}.panel{background:#101722;border:1px solid #28364a;border-radius:16px;padding:14px;margin-bottom:16px}.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.row strong{margin-right:auto}.status{color:#8bd9ff;font-size:13px}.footer{color:#8292a8;text-align:center;font-size:12px;margin:18px 18px 55px}
+@media(max-width:600px){header{padding:12px}main{padding:12px}.settings{padding:12px}.keys{height:300px;min-height:240px}.key .shortcut{bottom:36px;padding:3px 5px}.key.black .shortcut{bottom:35px}.key.black{width:4.0%}}
+</style></head>
+<body>
+<header><div><h1>🎹 Sargam Beats</h1><div class="sub">LOUD DJ Piano • 21 white keys + sharps • tap to play</div></div><div class="toolbar"><button id="record">⏺ Record</button><button id="play">▶ Play</button><button id="stop">■ Stop</button></div></header>
+<div class="settings">
+<label>Instrument <select id="instrument"><option value="piano">Soft Piano</option><option value="electric">Electric Keys</option><option value="bell">Music Box</option><option value="organ">Organ</option></select></label>
+<label>Octave <button id="down" aria-label="Lower octave">−</button><b id="octave">4</b><button id="up" aria-label="Raise octave">＋</button></label>
+<label>Volume <input id="volume" type="range" min="0" max="1" step=".01" value=".55"></label>
+<button id="sustain" class="active">Sustain: On</button><button id="dj" class="active">🔥 DJ Boost: Off</button>
+</div>
+<main>
+<div class="panel"><div class="row"><strong>Play something!</strong><span class="status" id="status">Soft piano mode • hold a key for a sustained note</span></div><p class="hint">Computer keys: A W S E D F T G Y H U J K O L P ; &nbsp; • &nbsp; Works on phone and computer.</p></div>
+<div class="keys" id="keys" aria-label="Playable piano keyboard"></div>
+<div class="panel" style="margin-top:18px"><div class="row"><strong>Ready-made songs</strong><button data-song="twinkle">Twinkle Twinkle</button><button data-song="ode">Ode to Joy</button><button data-song="scale">C Major Scale</button>
+<button data-song="vande">Vande Mataram</button>
+<button data-song="saare">Saare Jahan Se Achha</button>
+<button data-song="raghu">Raghupati Raghav Raja Ram</button>
+<button data-song="jana">Jana Gana Mana</button></div><p class="hint">Tap a melody to hear it. Use device media volume for maximum loudness.</p></div>
+<div class="footer">Sargam Beats • Sound is generated in your browser; no downloads or sign-in required.</div>
+</main>
+<script>
+const whiteBase=[['C','a',0],['D','s',2],['E','d',4],['F','f',5],['G','g',7],['A','h',9],['B','j',11]];
+const blackBase=[['C♯','w',1,0],['D♯','e',3,1],['F♯','t',6,3],['G♯','y',8,4],['A♯','u',10,5]];
+const whiteNotes=Array.from({length:21},(_,i)=>{const b=whiteBase[i%7];return {n:b[0],s:i<7?b[1]:i<14?String(i-6):String(i-13),semi:Math.floor(i/7)*12+b[2]}});
+const blackNotes=Array.from({length:15},(_,i)=>{const b=blackBase[i%5];return {n:b[0],s:i<5?b[0].replace('♯',''):b[0].replace('♯',''),semi:Math.floor(i/5)*12+b[2],after:Math.floor(i/5)*7+b[3]}});
+let octave=4,vol=.55,sustain=true,djBoost=false,activeVoices=new Map(),ctx=null,master=null,recording=false,events=[],started=0,playingTimers=[];
+const keysEl=document.querySelector('#keys');
+function build(){keysEl.innerHTML='';whiteNotes.forEach((x,i)=>{let e=document.createElement('button');e.className='key';e.dataset.semi=x.semi;e.dataset.short=x.s.toLowerCase();e.innerHTML=`<span class="shortcut">${x.s}</span><span class="note">${x.n}</span>`;e.setAttribute('aria-label',x.n+' key');e.addEventListener('contextmenu',ev=>ev.preventDefault());e.addEventListener('pointerdown',ev=>{ev.preventDefault();e.setPointerCapture?.(ev.pointerId);if(e._voice)releaseVoice(e._voice);e._voice=playNote(x.semi,e)});e.addEventListener('pointerup',()=>{if(e._voice)releaseVoice(e._voice);e._voice=null});e.addEventListener('pointercancel',()=>{if(e._voice)releaseVoice(e._voice);e._voice=null});keysEl.appendChild(e)});
+blackNotes.forEach((x)=>{let e=document.createElement('button');e.className='key black';e.dataset.semi=x.semi;e.dataset.short=x.s.toLowerCase();e.style.left=`${(x.after+1)*100/21}%`;e.innerHTML=`<span class="shortcut">${x.s}</span><span class="note">${x.n}</span>`;e.setAttribute('aria-label',x.n+' key');e.addEventListener('contextmenu',ev=>ev.preventDefault());e.addEventListener('pointerdown',ev=>{ev.preventDefault();e.setPointerCapture?.(ev.pointerId);if(e._voice)releaseVoice(e._voice);e._voice=playNote(x.semi,e)});e.addEventListener('pointerup',()=>{if(e._voice)releaseVoice(e._voice);e._voice=null});e.addEventListener('pointercancel',()=>{if(e._voice)releaseVoice(e._voice);e._voice=null});keysEl.appendChild(e)});}
+function ensureAudio(){if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.gain.value=vol;master.connect(ctx.destination)}if(ctx.state==='suspended')ctx.resume();return ctx}
+function playNote(semi,el,fromSong=false){
+ let c=ensureAudio(),freq=440*Math.pow(2,((octave*12+semi)-(4*12+9))/12),now=c.currentTime,type=document.querySelector('#instrument').value;
+ let osc=c.createOscillator(),gain=c.createGain(),voice={osc,gain,el,semi};osc.frequency.value=freq;
+ osc.type=type==='electric'?'sawtooth':type==='organ'?'square':type==='bell'?'sine':'triangle';
+ gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(type==='organ'?.35:.48,now+.03);
+ // Long, resonant release; long press holds the oscillator until pointer release.
+ gain.gain.setTargetAtTime(.0001,now+(sustain?2.8:.65),.5);
+ osc.connect(gain);gain.connect(master);osc.start(now);
+ let harmonics=[];
+ if(type!=='organ'){for(let h=2;h<=3;h++){let o=c.createOscillator(),g=c.createGain();o.type=h===2?'sine':'triangle';o.frequency.value=freq*h;g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime((h===2?.12:.045),now+.03);g.gain.setTargetAtTime(.0001,now+1.8,.35);o.connect(g);g.connect(master);o.start(now);harmonics.push({osc:o,gain:g})}}
+ voice.harmonics=harmonics;activeVoices.set(el||Symbol(),voice);
+ if(el){el.classList.add('pressed');el.setAttribute('aria-pressed','true')}
+ if(recording&&!fromSong)events.push({semi,t:Date.now()-started});
+ document.querySelector('#status').textContent='Playing '+(el?.querySelector('.note').textContent||'note');
+ if(!el){setTimeout(()=>releaseVoice(voice),sustain?1800:700)}
+ return voice;
+}
+function releaseVoice(v){try{let now=ctx.currentTime;v.gain.gain.cancelScheduledValues(now);v.gain.gain.setTargetAtTime(.0001,now,.12);v.osc.stop(now+0.5);(v.harmonics||[]).forEach(h=>{h.gain.gain.setTargetAtTime(.0001,now,.1);h.osc.stop(now+.5)});if(v.el){v.el.classList.remove('pressed');v.el.setAttribute('aria-pressed','false')}}catch(e){}}
+function byShortcut(k){let e=[...keysEl.children].find(e=>e.dataset.short===k.toLowerCase());if(e)playNote(+e.dataset.semi,e)}
+window.addEventListener('keydown',e=>{if(e.repeat||['INPUT','SELECT','BUTTON'].includes(document.activeElement.tagName)&&document.activeElement.id!=='keys')return;byShortcut(e.key)});
+document.querySelector('#volume').addEventListener('input',e=>{vol=+e.target.value;if(master)master.gain.value=vol*(djBoost?1.5:1)});
+document.querySelector('#down').onclick=()=>{octave=Math.max(1,octave-1);document.querySelector('#octave').textContent=octave};
+document.querySelector('#up').onclick=()=>{octave=Math.min(7,octave+1);document.querySelector('#octave').textContent=octave};
+document.querySelector('#dj').onclick=e=>{djBoost=!djBoost;e.target.textContent='🔥 DJ Boost: '+(djBoost?'On':'Off');e.target.classList.toggle('active',djBoost);if(master)master.gain.value=vol*(djBoost?1.5:1)};
+document.querySelector('#sustain').onclick=e=>{sustain=!sustain;e.target.textContent='Sustain: '+(sustain?'On':'Off');e.target.classList.toggle('active',sustain)};
+document.querySelector('#record').onclick=e=>{recording=!recording;if(recording){events=[];started=Date.now();e.target.classList.add('active');e.target.textContent='⏹ Finish Recording';document.querySelector('#status').textContent='Recording… play some notes'}else{e.target.classList.remove('active');e.target.textContent='⏺ Record';document.querySelector('#status').textContent=events.length?`Recorded ${events.length} notes`:'No notes recorded'}};
+document.querySelector('#stop').onclick=()=>{songRunId++;playingTimers.forEach(clearTimeout);playingTimers=[];recording=false;document.querySelector('#record').classList.remove('active');document.querySelector('#record').textContent='⏺ Record';document.querySelector('#status').textContent='Stopped'};
+document.querySelector('#play').onclick=()=>{if(!events.length){document.querySelector('#status').textContent='Record some notes first, then press Play';return}ensureAudio();events.forEach(ev=>playingTimers.push(setTimeout(()=>playNote(ev.semi,null,true),ev.t)));document.querySelector('#status').textContent='Playing your recording…'};
+const songs={
+ twinkle:[0,0,7,7,9,9,7,5,5,4,4,2,2,0],
+ ode:[4,4,5,7,7,5,4,2,0,0,2,4,4,2,2],
+ scale:[0,2,4,5,7,9,11,12],
+ vande:[0,4,7,9,7,4,5,7,9,12,11,9,7,5,4,2,0],
+ saare:[0,2,4,7,7,9,7,5,4,5,7,9,7,5,4,2,0],
+ raghu:[0,4,7,7,9,7,5,4,5,7,5,4,2,0,2,4,0],
+ jana:[0,0,4,5,7,7,9,7,5,4,2,4,5,7,9,7,5,4,2,0]
+};
+let songRunId=0;
+document.querySelectorAll('[data-song]').forEach(b=>b.onclick=async()=>{
+  const status=document.querySelector('#status');
+  try {
+    const c=ensureAudio();
+    if(c.state==='suspended') await c.resume();
+    playingTimers.forEach(clearTimeout); playingTimers=[];
+    const runId=++songRunId;
+    const melody=songs[b.dataset.song];
+    if(!Array.isArray(melody)||!melody.length){status.textContent='Song unavailable — try another';return}
+    status.textContent='Playing '+b.textContent+'…';
+    melody.forEach((n,i)=>playingTimers.push(setTimeout(()=>{
+      if(runId===songRunId) playNote(n,null,true);
+    },i*420)));
+  } catch(err) {
+    status.textContent='Tap the song again to enable audio.';
+  }
+});
+build();
+document.addEventListener('contextmenu',e=>{if(e.target.closest('.key'))e.preventDefault()});
+document.addEventListener('selectstart',e=>{if(e.target.closest('.key'))e.preventDefault()});
+let lastTouchEnd=0;document.addEventListener('touchend',e=>{if(e.target.closest('.key')){const now=Date.now();if(now-lastTouchEnd<=350)e.preventDefault();lastTouchEnd=now}}, {passive:false});
+
+</script>
+<footer id="creator-credit" style="
+  position:fixed;left:0;right:0;bottom:4px;z-index:20;
+  text-align:center;color:#ffd166;font:900 clamp(16px,3vw,26px)/1.35 system-ui,Arial,sans-serif;
+  letter-spacing:2px;text-shadow:0 2px 8px #000;
+  pointer-events:none;padding:3px 8px;">
+  MADE BY: AMRISH RAJ<br>ADDRESS: DEOGHAR, JHARKHAND
+</footer>
+<style>
+#creator-credit{opacity:1;background:linear-gradient(90deg,transparent,#0a0d14ee 20%,#0a0d14ee 80%,transparent);padding:7px 8px!important}
+@media(max-height:460px){#creator-credit{font-size:16px;bottom:1px;padding:2px 8px!important}}
+</style>
+
+</body></html>
